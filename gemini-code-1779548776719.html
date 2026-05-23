@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinServ Solutions - Infrastructure Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans min-h-screen">
+
+    <nav class="bg-gray-800 border-b border-gray-700 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="bg-blue-600 p-2 rounded-lg text-white font-bold tracking-wider">FS</div>
+            <div>
+                <h1 class="text-xl font-bold tracking-tight text-white">FinServ Solutions</h1>
+                <p class="text-xs text-gray-400">PaaS Customer Portal Monitor</p>
+            </div>
+        </div>
+        <div class="text-right">
+            <span class="bg-gray-700 text-blue-400 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider">
+                Student ID: 20260594
+            </span>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-6 space-y-6">
+        
+        <div class="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-xl p-6 shadow-xl border border-blue-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h2 class="text-lg font-bold text-blue-300 mb-1">Active Scope Workspace</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-300">
+                    <div><span class="text-gray-400 font-medium">Resource Group:</span> PM01-RG20260594</div>
+                    <div><span class="text-gray-400 font-medium">Deployment Target:</span> pm01-webapp-20260594</div>
+                    <div><span class="text-gray-400 font-medium">Region:</span> South Africa North</div>
+                    <div><span class="text-gray-400 font-medium">Service Plan Plan:</span> Standard S1 (PaaS)</div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-700/50 flex space-x-3 w-full md:w-auto justify-end">
+                <button id="normalBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs px-4 py-2 rounded transition shadow">
+                    Reset Baseline
+                </button>
+                <button id="stressBtn" class="bg-rose-600 hover:bg-rose-700 text-white font-medium text-xs px-4 py-2 rounded transition shadow animate-pulse">
+                    Simulate 80%+ CPU Stress
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-md">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-gray-400 text-xs uppercase font-bold tracking-wider">CPU Compute Load</span>
+                    <span id="cpuStatusBadge" class="bg-emerald-900 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Optimal</span>
+                </div>
+                <div class="flex items-baseline space-x-2">
+                    <span id="cpuText" class="text-4xl font-extrabold text-white tracking-tight">34%</span>
+                    <span class="text-xs text-gray-400">allocated capacity</span>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-1.5 mt-4">
+                    <div id="cpuBar" class="bg-blue-500 h-1.5 rounded-full transition-all duration-500" style="width: 34%"></div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-md">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-gray-400 text-xs uppercase font-bold tracking-wider">Memory Allocation</span>
+                    <span class="text-gray-500 text-[10px] font-bold uppercase">S1 Architecture</span>
+                </div>
+                <div class="flex items-baseline space-x-2">
+                    <span id="memText" class="text-4xl font-extrabold text-white tracking-tight">0.82 GB</span>
+                    <span class="text-xs text-gray-400">of 1.75 GB Standard</span>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-1.5 mt-4">
+                    <div id="memBar" class="bg-purple-500 h-1.5 rounded-full transition-all duration-500" style="width: 47%"></div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-md">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-gray-400 text-xs uppercase font-bold tracking-wider">Autoscale Capacity Bound</span>
+                    <span class="bg-blue-900 text-blue-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Min 1 / Max 3</span>
+                </div>
+                <div class="flex items-baseline space-x-2">
+                    <span id="instancesText" class="text-4xl font-extrabold text-white tracking-tight">1</span>
+                    <span class="text-xs text-gray-400">Active Node Instance</span>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-1.5 mt-4">
+                    <div id="instancesBar" class="bg-amber-500 h-1.5 rounded-full transition-all duration-500" style="width: 33.3%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-md lg:col-span-2">
+                <h3 class="text-sm font-bold text-gray-300 uppercase tracking-wider mb-4">Real-Time Performance Engine Telemetry Stream</h3>
+                <div class="h-64">
+                    <canvas id="telemetryChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-md flex flex-col h-full">
+                <h3 class="text-sm font-bold text-gray-300 uppercase tracking-wider mb-3">Live Log Stream (KQL Mock Routing)</h3>
+                <div id="logTerminal" class="bg-gray-950 rounded-lg p-4 font-mono text-xs text-emerald-400 space-y-2 flex-grow overflow-y-auto max-h-[250px] border border-gray-800">
+                    <div>[INFO] System initialized. Tracking metric signals...</div>
+                    <div>[INFO] Link state telemetry attached to workspace.</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const logTerminal = document.getElementById('logTerminal');
+        let currentMode = 'normal'; // normal or stress
+
+        // Append custom structured timestamps onto log stack
+        function pushLog(message, level = 'INFO') {
+            const time = new Date().toISOString().split('T')[1].slice(0, 8);
+            const entry = document.createElement('div');
+            if (level === 'CRIT') {
+                entry.className = "text-rose-400 font-semibold";
+                entry.innerHTML = `[${time}] [${level}] ${message}`;
+            } else if (level === 'WARN') {
+                entry.className = "text-amber-400";
+                entry.innerHTML = `[${time}] [${level}] ${message}`;
+            } else {
+                entry.innerHTML = `[${time}] [INFO] ${message}`;
+            }
+            logTerminal.appendChild(entry);
+            logTerminal.scrollTop = logTerminal.scrollHeight;
+        }
+
+        // Initialize empty telemetry chart
+        const ctx = document.getElementById('telemetryChart').getContext('2d');
+        const labels = Array(15).fill('');
+        const cpuDataPoints = Array(15).fill(34);
+        
+        const chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'CPU Usage (%)',
+                    data: cpuDataPoints,
+                    borderColor: '#3b82f6',
+                    borderWidth: 2,
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { min: 0, max: 100, ticks: { color: '#9ca3af' }, grid: { color: '#374151' } }
+                }
+            }
+        });
+
+        // Main automation interval polling simulation framework
+        setInterval(() => {
+            let cpuValue = 0;
+            let memValue = 0;
+            let currentInstances = parseInt(document.getElementById('instancesText').innerText);
+
+            if (currentMode === 'normal') {
+                cpuValue = Math.floor(Math.random() * (45 - 28) + 28);
+                memValue = parseFloat((Math.random() * (0.88 - 0.78) + 0.78).toFixed(2));
+                
+                // Scale back down if load returned to low levels
+                if (currentInstances > 1 && Math.random() > 0.7) {
+                    currentInstances--;
+                    pushLog("Cool-down evaluate complete. Autoscaling in. Terminating node instance.", "WARN");
+                }
+
+                document.getElementById('cpuStatusBadge').className = "bg-emerald-900 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase";
+                document.getElementById('cpuStatusBadge').innerText = "Optimal";
+            } else {
+                // High stress mode simulation
+                cpuValue = Math.floor(Math.random() * (98 - 83) + 83);
+                memValue = parseFloat((Math.random() * (1.45 - 1.25) + 1.25).toFixed(2));
+                
+                document.getElementById('cpuStatusBadge').className = "bg-rose-900 text-rose-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase";
+                document.getElementById('cpuStatusBadge').innerText = "Critical (>80%)";
+
+                if (cpuValue > 80) {
+                    pushLog(`Alert threshold breached. CPU performance peak at ${cpuValue}%`, "CRIT");
+                }
+
+                // Autoscale scale out logic rule trigger evaluation simulation
+                if (cpuValue > 70 && currentInstances < 3) {
+                    currentInstances++;
+                    pushLog(`Autoscale boundary evaluation: CPU > 70%. Deploying standard target cluster instance node #${currentInstances}.`, "WARN");
+                }
+            }
+
+            // Update DOM text elements
+            document.getElementById('cpuText').innerText = `${cpuValue}%`;
+            document.getElementById('memText').innerText = `${memValue} GB`;
+            document.getElementById('instancesText').innerText = currentInstances;
+
+            // Render matching visual bar metrics ratios
+            document.getElementById('cpuBar').style.width = `${cpuValue}%`;
+            document.getElementById('memBar').style.width = `${(memValue / 1.75) * 100}%`;
+            document.getElementById('instancesBar').style.width = `${(currentInstances / 3) * 100}%`;
+
+            // Adjust bar warning tracks depending on status limits
+            if (cpuValue >= 80) {
+                document.getElementById('cpuBar').className = "bg-rose-500 h-1.5 rounded-full transition-all duration-500";
+            } else if (cpuValue >= 70) {
+                document.getElementById('cpuBar').className = "bg-amber-500 h-1.5 rounded-full transition-all duration-500";
+            } else {
+                document.getElementById('cpuBar').className = "bg-blue-500 h-1.5 rounded-full transition-all duration-500";
+            }
+
+            // Add new live element down standard historical tracking line array
+            chartInstance.data.datasets[0].data.shift();
+            chartInstance.data.datasets[0].data.push(cpuValue);
+            chartInstance.update();
+
+        }, 2000);
+
+        // Control triggers listeners
+        document.getElementById('stressBtn').addEventListener('click', () => {
+            currentMode = 'stress';
+            pushLog("Triggered high core transaction loads. SIMULATING SEVERE CPU STRESS EVENT.", "CRIT");
+        });
+
+        document.getElementById('normalBtn').addEventListener('click', () => {
+            currentMode = 'normal';
+            pushLog("Resumed baseline execution. Purging application background tasks thread hooks.");
+        });
+    </script>
+</body>
+</html>
